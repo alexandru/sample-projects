@@ -11,6 +11,20 @@ import org.flywaydb.core.api.configuration.FluentConfiguration
 import org.flywaydb.core.api.output.MigrateResult
 import org.slf4j.LoggerFactory
 
+/**
+ * Given a JDBC configuration, run the associated DB migrations.
+ *
+ * NOTE: `adminUsername` and `adminPassword` are different from the credentials
+ * specified in `JdbcConnectionConfig`. That's because the "admin" user may be
+ * different from the app's user. So if an `adminUsername` and an `adminPassword`
+ * are provider, Flyway will use that admin user to execute migrations.
+ *
+ * Flyway uses "placeholders" that can be used in the SQL migrations.
+ * These can be specified in `JdbcConnectionConfig`, but this code also sets
+ * 2 special placeholders to use from the `JdbcConnectionConfig` itself:
+ * `dbUsername` and `dbPassword`. These can be used to create the app's user
+ * as part of the defined migrations.
+ */
 suspend fun dbMigrate(
     config: JdbcConnectionConfig,
     adminUsername: String?,
